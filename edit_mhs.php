@@ -11,14 +11,9 @@
     include 'koneksi.php';
     include 'menu.php';
 
-    // Ambil ID dari URL
     $id = $_GET['id'];
-
-    // Ambil data mahasiswa berdasarkan ID
     $sql = "SELECT * FROM tbmahasiswa WHERE id = $id";
     $result = $conn->query($sql);
-    
-    // Pastikan data ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
     ?>
@@ -52,7 +47,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                    <a href="index.php" class="btn btn-secondary">Batal</a>
+                    <a href="mahasiswa.php" class="btn btn-secondary">Batal</a>
                 </form>
             </div>
         </div>

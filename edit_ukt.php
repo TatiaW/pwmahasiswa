@@ -12,8 +12,6 @@
     include 'menu.php';
 
     $id = $_GET['id'];
-    
-    // Ambil data UKT yang mau diedit
     $sql = "SELECT * FROM tbukt WHERE id_ukt = '$id'";
     $result = $conn->query($sql);
     $data = $result->fetch_assoc();
@@ -33,12 +31,10 @@
                         <label class="form-label">Nama Mahasiswa</label>
                         <select name="id_mhs" class="form-select">
                             <?php
-                            // Ambil semua mahasiswa untuk dropdown
                             $mhs_sql = "SELECT * FROM tbmahasiswa ORDER BY nama ASC";
                             $mhs_res = $conn->query($mhs_sql);
                             
                             while($m = $mhs_res->fetch_assoc()){
-                                // Jika ID mahasiswa di table UKT sama dengan ID di list, tambahkan 'selected'
                                 $pilih = ($m['id'] == $data['id_mhs']) ? 'selected' : '';
                                 echo "<option value='$m[id]' $pilih>$m[nim] - $m[nama]</option>";
                             }
@@ -49,10 +45,13 @@
                     <div class="mb-3">
                         <label class="form-label">Semester</label>
                         <select name="semester" class="form-select">
-                            <option value="1" <?= ($data['semester'] == 1) ? 'selected' : ''; ?>>Semester 1</option>
-                            <option value="2" <?= ($data['semester'] == 2) ? 'selected' : ''; ?>>Semester 2</option>
-                            <option value="3" <?= ($data['semester'] == 3) ? 'selected' : ''; ?>>Semester 3</option>
-                            <option value="4" <?= ($data['semester'] == 4) ? 'selected' : ''; ?>>Semester 4</option>
+                            <?php
+                            $qry_smt_edit = $conn->query("SELECT * FROM tbsemester ORDER BY id_semester ASC");
+                            while($se = $qry_smt_edit->fetch_assoc()){
+                                $pilih_smt = ($se['id_semester'] == $data['semester']) ? 'selected' : '';
+                                echo "<option value='".$se['id_semester']."' $pilih_smt>".$se['nama_semester']."</option>";
+                            }
+                            ?>
                         </select>
                     </div>
 

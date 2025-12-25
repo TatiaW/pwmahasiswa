@@ -22,11 +22,16 @@
                         <label class="col-form-label fw-bold">Filter Semester:</label>
                     </div>
                     <div class="col-auto">
-                    <select name="filter_smt" class="form-select" onchange="this.form.submit()">
-                        <option value="1" <?php if(isset($_GET['filter_smt']) && $_GET['filter_smt'] == '1' || !isset($_GET['filter_smt'])) echo 'selected'; ?>>Semester 1</option>
-                        <option value="2" <?php if(isset($_GET['filter_smt']) && $_GET['filter_smt'] == '2') echo 'selected'; ?>>Semester 2</option>
-                        <option value="3" <?php if(isset($_GET['filter_smt']) && $_GET['filter_smt'] == '3') echo 'selected'; ?>>Semester 3</option>
-                        <option value="4" <?php if(isset($_GET['filter_smt']) && $_GET['filter_smt'] == '4') echo 'selected'; ?>>Semester 4</option>
+                   <select name="filter_smt" class="form-select" onchange="this.form.submit()">
+                        <?php
+                        $qry_smt = $conn->query("SELECT * FROM tbsemester ORDER BY id_semester ASC");
+                        while($s = $qry_smt->fetch_assoc()){
+                            $selected = (isset($_GET['filter_smt']) && $_GET['filter_smt'] == $s['id_semester']) ? 'selected' : '';
+                            if(!isset($_GET['filter_smt']) && $s['id_semester'] == 1) $selected = 'selected';
+                            
+                            echo "<option value='".$s['id_semester']."' $selected>".$s['nama_semester']."</option>";
+                        }
+                        ?>
                     </select>
                     </div>
                     <div class="col-auto">
@@ -55,14 +60,11 @@
             </thead>
             <tbody>
             <?php
-            // LOGIKA BARU: Default ke Semester 1 jika tidak ada pilihan
             if(isset($_GET['filter_smt'])){
                 $smt = $_GET['filter_smt'];
             } else {
-                $smt = '1'; // Default otomatis Semester 1
+                $smt = '1';
             }
-            
-            // Query selalu pakai WHERE karena pasti ada semester yang dipilih
             $sql = "SELECT tbukt.*, tbmahasiswa.nama, tbmahasiswa.nim 
                     FROM tbukt 
                     JOIN tbmahasiswa ON tbukt.id_mhs = tbmahasiswa.id 
@@ -111,16 +113,15 @@
               <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label">Pilih Mahasiswa</label>
-                    <select name="id_mhs" class="form-select" required>
-                        <option value="">-- Pilih Nama --</option>
+                    <select name="semester" class="form-select" required>
+                        <option value="">-- Pilih Semester --</option>
                         <?php
-                        $sql_mhs = "SELECT * FROM tbmahasiswa ORDER BY nama ASC";
-                        $res_mhs = $conn->query($sql_mhs);
-                        while($m = $res_mhs->fetch_assoc()){
-                            echo "<option value='$m[id]'>$m[nim] - $m[nama]</option>";
+                        $qry_smt_modal = $conn->query("SELECT * FROM tbsemester ORDER BY id_semester ASC");
+                        while($sm = $qry_smt_modal->fetch_assoc()){
+                            echo "<option value='".$sm['id_semester']."'>".$sm['nama_semester']."</option>";
                         }
                         ?>
-                    </select>
+                    </select>   
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Semester</label>
